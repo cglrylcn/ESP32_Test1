@@ -25,6 +25,7 @@ void initCAN0(unsigned long baudRate) {
 }
 
 CAN_FRAME rxMessage;
+CAN_FRAME txMessage;
 byte i = 0;
 byte initOnce = 0;
 void loop() {
@@ -53,7 +54,38 @@ void loop() {
     Serial.println();
     Serial.println();
 
+    //STANDART FRAME
+    if(rxMessage.id == 0x180) {
+      txMessage.rtr = 0;
+      txMessage.extended = false;
+      txMessage.id = 0x181;
+      txMessage.length = 8;
+      txMessage.data.byte[0] = 0x00;
+      txMessage.data.byte[1] = 0x01;
+      txMessage.data.byte[2] = 0x02;
+      txMessage.data.byte[3] = 0x03;
+      txMessage.data.byte[4] = 0x04;
+      txMessage.data.byte[5] = 0x05;
+      txMessage.data.byte[6] = 0x06;
+      txMessage.data.byte[7] = 0x07;
+      CAN0.sendFrame(txMessage);
+    }
+    //EXTENDED FRAME
+    else if(rxMessage.id == 0x18FEF100) {
+      txMessage.rtr = 0;
+      txMessage.extended = true;
+      txMessage.id = 0x18FEF121;
+      txMessage.length = 8;
+      txMessage.data.byte[0] = 0x00;
+      txMessage.data.byte[1] = 0x01;
+      txMessage.data.byte[2] = 0x02;
+      txMessage.data.byte[3] = 0x03;
+      txMessage.data.byte[4] = 0x04;
+      txMessage.data.byte[5] = 0x05;
+      txMessage.data.byte[6] = 0x06;
+      txMessage.data.byte[7] = 0x07;
+      CAN0.sendFrame(txMessage);
+    }
     rxMessage.id++;
-    //CAN0.sendFrame(rxMessage);
   }
 }
