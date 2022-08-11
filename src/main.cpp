@@ -1,4 +1,3 @@
-#include "stdbool.h"
 #include <can_common.h>
 #include <esp32_can.h>
 
